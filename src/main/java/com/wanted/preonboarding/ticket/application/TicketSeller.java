@@ -46,7 +46,6 @@ public class TicketSeller {
             // 2. 예매 진행
             reservationRepository.save(Reservation.of(reserveInfo));
             return true;
-
         } else {
             return false;
         }
