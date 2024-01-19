@@ -17,15 +17,17 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class TicketSeller {
+
     private final PerformanceRepository performanceRepository;
     private final ReservationRepository reservationRepository;
+
     private long totalAmount = 0L;
 
     public List<PerformanceInfo> getAllPerformanceInfoList() {
         return performanceRepository.findByIsReserve("enable")
-            .stream()
-            .map(PerformanceInfo::of)
-            .toList();
+                .stream()
+                .map(PerformanceInfo::of)
+                .toList();
     }
 
     public PerformanceInfo getPerformanceInfoDetail(String name) {
@@ -35,7 +37,7 @@ public class TicketSeller {
     public boolean reserve(ReserveInfo reserveInfo) {
         log.info("reserveInfo ID => {}", reserveInfo.getPerformanceId());
         Performance info = performanceRepository.findById(reserveInfo.getPerformanceId())
-            .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
         String enableReserve = info.getIsReserve();
         if (enableReserve.equalsIgnoreCase("enable")) {
             // 1. 결제

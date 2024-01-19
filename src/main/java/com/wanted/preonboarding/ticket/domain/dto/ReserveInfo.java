@@ -4,13 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
 public class ReserveInfo {
+
     // 공연 및 전시 정보 + 예약자 정보
     private UUID performanceId;
     private String reservationName;
