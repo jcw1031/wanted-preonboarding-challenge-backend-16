@@ -10,19 +10,23 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
+@Transactional
 @RequiredArgsConstructor
 public class TicketSeller {
 
     private final PerformanceRepository performanceRepository;
     private final ReservationRepository reservationRepository;
+    private final PaymentManager paymentManager;
 
     private long totalAmount = 0L;
 
+    @Transactional(readOnly = true)
     public List<PerformanceInfo> getAllPerformanceInfoList() {
         return performanceRepository.findByIsReserve("enable")
                 .stream()
@@ -30,6 +34,7 @@ public class TicketSeller {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public PerformanceInfo getPerformanceInfoDetail(String name) {
         return PerformanceInfo.of(performanceRepository.findByName(name));
     }
@@ -41,8 +46,11 @@ public class TicketSeller {
         String enableReserve = info.getIsReserve();
         if (enableReserve.equalsIgnoreCase("enable")) {
             // 1. 결제
-            int price = info.getPrice();
-            reserveInfo.setAmount(reserveInfo.getAmount() - price);
+            boolean paymentResult = paymentManager.pay(info, reserveInfo);
+            if (!paymentResult) {
+                return false;
+            }
+
             // 2. 예매 진행
             reservationRepository.save(Reservation.of(reserveInfo));
             return true;
@@ -50,5 +58,4 @@ public class TicketSeller {
             return false;
         }
     }
-
 }
