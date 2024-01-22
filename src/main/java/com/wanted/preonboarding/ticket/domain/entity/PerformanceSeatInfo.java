@@ -9,6 +9,8 @@ import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "performance_seat_info")
 @Getter
@@ -18,7 +20,7 @@ public class PerformanceSeatInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false, name = "performance_id")
-    private int performanceId;
+    private UUID performanceId;
     @Column(nullable = false)
     private int round;
     @Column(nullable = false)
@@ -34,7 +36,7 @@ public class PerformanceSeatInfo {
     }
 
     @Builder
-    public PerformanceSeatInfo(int performanceId, int round, int gate, String line, int seat, String isReserve) {
+    public PerformanceSeatInfo(UUID performanceId, int round, int gate, String line, int seat, String isReserve) {
         this.performanceId = performanceId;
         this.round = round;
         this.gate = gate;
